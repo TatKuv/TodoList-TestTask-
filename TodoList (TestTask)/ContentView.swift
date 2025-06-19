@@ -67,7 +67,7 @@ struct ContentView: View {
                     
                     .contextMenu {
                         
-                        NavigationLink(destination: TodoDetailedView(todo: task)) {
+                        NavigationLink(destination: TodoDetailedView(todo: task, context: moc)) {  // Заменить на NavigationLink(value:) ??
                             Label("Редактировать", systemImage: "square.and.pencil")
                         }
                         
@@ -77,12 +77,15 @@ struct ContentView: View {
                         }
                         Button {
                             moc.delete(task)
+                            
+//                            Заменить на функцию
 //                            do {
 //                                try moc.save()
 //                                
 //                            } catch {
 //                                print("deliting not saved: \(error)")
 //                            }
+                            
                             
                         } label: {
                             Label("Удалить", systemImage: "arrow.up.trash")
@@ -100,9 +103,12 @@ struct ContentView: View {
 //                            Button("New", systemImage: "square.and.pencil") {
 //                                
 //                            }
-                        NavigationLink(destination: TodoDetailedView()) {  //нужно передавать новый объект
-                            
+                        
+                        NavigationLink(value: moc) {
                             Label("New", systemImage: "square.and.pencil")
+                        }
+                        .navigationDestination(for: NSManagedObjectContext.self) { moc in
+                            TodoDetailedView(context: moc)
                         }
                         
                     }
