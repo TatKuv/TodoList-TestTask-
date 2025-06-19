@@ -8,10 +8,15 @@
 import SwiftUI
 
 @main
-struct TodoList__TestTask_App: App {
+struct Todo_List__TestTask_App: App {
+    @StateObject private var dataController = DataController()
+    @StateObject private var modelData = ModelData()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.managedObjectContext, dataController.container.viewContext)
+                .environmentObject(modelData)
         }
     }
 }
