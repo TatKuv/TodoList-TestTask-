@@ -10,7 +10,6 @@ import SwiftUI
 
 struct ContentView: View {
     @FetchRequest(sortDescriptors: []) var todos: FetchedResults<Todo>
-   
     
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var modelData: ModelData
@@ -57,12 +56,12 @@ struct ContentView: View {
                     
                     .onTapGesture {
                         task.isCompleted.toggle()
-//                        do {
-//                            try moc.save()
-//                            
-//                        } catch {
-//                            print("changes not saved: \(error)")
-//                        }
+                        //                        do {
+                        //                            try moc.save()
+                        //
+                        //                        } catch {
+                        //                            print("changes not saved: \(error)")
+                        //                        }
                     }
                     
                     .contextMenu {
@@ -78,13 +77,13 @@ struct ContentView: View {
                         Button {
                             moc.delete(task)
                             
-//                            Заменить на функцию
-//                            do {
-//                                try moc.save()
-//                                
-//                            } catch {
-//                                print("deliting not saved: \(error)")
-//                            }
+                            //                            Заменить на функцию
+                            //                            do {
+                            //                                try moc.save()
+                            //
+                            //                            } catch {
+                            //                                print("deliting not saved: \(error)")
+                            //                            }
                             
                             
                         } label: {
@@ -98,12 +97,8 @@ struct ContentView: View {
                     
                     ToolbarItemGroup (placement: .bottomBar) {
                         Spacer()
-                            Text("\(todos.count) задач")
+                        Text("\(todos.count) \(taskWord(for: todos.count))")
                         Spacer()
-//                            Button("New", systemImage: "square.and.pencil") {
-//                                
-//                            }
-                        
                         NavigationLink(value: moc) {
                             Label("New", systemImage: "square.and.pencil")
                         }
@@ -124,10 +119,28 @@ struct ContentView: View {
             .preferredColorScheme(.dark)
         }
     }
+    
+    func taskWord(for count: Int) -> String {
+        let remainder10 = count % 10
+        let remainder100 = count % 100
+        
+        if remainder100 >= 11 && remainder100 <= 14 {
+            return "задач"
+        }
+        switch remainder10 {
+        case 1:
+            return "задача"
+        case 2...4:
+            return "задачи"
+        default:
+            return "задач"
+        }
+    }
+    
 }
 
 #Preview {
     ContentView()
-        .environmentObject(DataController())
+        .environment(\.managedObjectContext, DataController().container.viewContext)
         .environmentObject(ModelData())
 }
