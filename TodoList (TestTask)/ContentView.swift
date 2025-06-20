@@ -20,7 +20,7 @@ struct ContentView: View {
         if searchText.isEmpty {
             Array(todos)
         } else {
-            todos.filter { $0.todo?.localizedStandardContains(searchText) == true }  //search
+            todos.filter { $0.todo.localizedStandardContains(searchText) == true }  //search
         }
     }
     
@@ -40,11 +40,11 @@ struct ContentView: View {
                         VStack (alignment: .leading) {
                             
                             Group {
-                                Text(task.todo ?? "cant specify")
+                                Text(task.todo)
                                     .font(.title2)
                                     .strikethrough(task.isCompleted)
                                 
-                                Text(task.taskDescription ?? "N/A")
+                                Text(task.taskDescription)
                             }
                             .opacity(task.isCompleted ? 0.6 : 1)
                             
@@ -53,7 +53,7 @@ struct ContentView: View {
                         }
                         .font(.caption)
                     }
-                    
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         task.isCompleted.toggle()
                         //                        do {
@@ -65,15 +65,14 @@ struct ContentView: View {
                     }
                     
                     .contextMenu {
-                        
-                        NavigationLink(destination: TodoDetailedView(todo: task, context: moc)) {  // Заменить на NavigationLink(value:) ??
+                        NavigationLink(value: task) {
                             Label("Редактировать", systemImage: "square.and.pencil")
                         }
                         
-                        Button {
-                        } label: {
-                            Label("Поделиться", systemImage: "square.and.arrow.up")
+                        ShareLink(item: "\(task.todo) \n \(task.taskDescription)") {
+                            Label ("Поделиться", systemImage: "square.and.arrow.up")
                         }
+                        
                         Button {
                             moc.delete(task)
                             
@@ -91,6 +90,9 @@ struct ContentView: View {
                         }
                     }
                 }
+                .navigationDestination(for: Todo.self) { task in
+                        TodoDetailedView(todo: task, context: moc)
+                    }
                 .listStyle(.plain)
                 .navigationTitle("Задачи")
                 .toolbar {
