@@ -8,6 +8,7 @@ import CoreData
 import SwiftUI
 
 struct TodoDetailedView: View {
+    //@Environment(\.managedObjectContext) var moc
     
     var context: NSManagedObjectContext
     var todo: Todo
@@ -17,8 +18,8 @@ struct TodoDetailedView: View {
 
     init(todo: Todo, context: NSManagedObjectContext) {
         self.todo = todo
-        self.title = todo.todo ?? "Task"
-        self.taskDescription = todo.taskDescription ?? ""
+        self.title = todo.todo //?? "Task"
+        self.taskDescription = todo.taskDescription //?? ""
         
         self.context = context
     }
@@ -36,7 +37,7 @@ struct TodoDetailedView: View {
     }
     
     var dateStr: String {
-        let date = todo.date ?? Date.now
+        let date = todo.date //?? Date.now
             return date.formatted(date: .numeric, time: .omitted)
     }
     

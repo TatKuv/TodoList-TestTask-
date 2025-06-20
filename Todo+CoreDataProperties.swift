@@ -19,7 +19,7 @@ extension Todo {
     @NSManaged public var id: String
     @NSManaged public var todo: String
     @NSManaged public var taskDescription: String
-    @NSManaged public var date: Date?
+    @NSManaged public var date: Date
     @NSManaged public var isCompleted: Bool
 
 }

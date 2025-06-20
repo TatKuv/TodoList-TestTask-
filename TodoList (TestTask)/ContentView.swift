@@ -11,10 +11,12 @@ import SwiftUI
 struct ContentView: View {
     @FetchRequest(sortDescriptors: []) var todos: FetchedResults<Todo>
     
+    @EnvironmentObject var dataController: DataController
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var modelData: ModelData
     
     @State private var searchText = ""
+//    @State private var showDetails = false
     
     var filteredTasks: [Todo] {
         if searchText.isEmpty {
@@ -48,7 +50,7 @@ struct ContentView: View {
                             }
                             .opacity(task.isCompleted ? 0.6 : 1)
                             
-                            Text(task.date?.formatted() ?? "N/A")
+                            Text(task.date.formatted(date: .numeric, time: .omitted))
                                 .opacity(0.6)
                         }
                         .font(.caption)
@@ -56,12 +58,7 @@ struct ContentView: View {
                     .contentShape(Rectangle())
                     .onTapGesture {
                         task.isCompleted.toggle()
-                        //                        do {
-                        //                            try moc.save()
-                        //
-                        //                        } catch {
-                        //                            print("changes not saved: \(error)")
-                        //                        }
+                        dataController.saveData()
                     }
                     
                     .contextMenu {
@@ -75,16 +72,7 @@ struct ContentView: View {
                         
                         Button {
                             moc.delete(task)
-                            
-                            //                            Заменить на функцию
-                            //                            do {
-                            //                                try moc.save()
-                            //
-                            //                            } catch {
-                            //                                print("deliting not saved: \(error)")
-                            //                            }
-                            
-                            
+                            dataController.saveData()
                         } label: {
                             Label("Удалить", systemImage: "arrow.up.trash")
                         }
@@ -107,16 +95,20 @@ struct ContentView: View {
                         .navigationDestination(for: NSManagedObjectContext.self) { moc in
                             TodoDetailedView(context: moc)
                         }
-                        
+//                            Button {
+//                                showDetails.toggle()
+//                            } label: {
+//                                Label("New", systemImage: "square.and.pencil")
+//                            }
                     }
                 }
                 
                 .task {
                     if todos.isEmpty {
-                        await modelData.loadAndImportTodos(using: moc)
+                        await modelData.loadAndImportTodos(using: dataController)
                     }
                 }
-                .searchable(text: $searchText, prompt: "Search for a task")
+                .searchable(text: $searchText, prompt: "Поиск задач")
             }
             .preferredColorScheme(.dark)
         }
@@ -142,7 +134,9 @@ struct ContentView: View {
 }
 
 #Preview {
+    let dataController = DataController()
     ContentView()
-        .environment(\.managedObjectContext, DataController().container.viewContext)
+        .environment(\.managedObjectContext, dataController.context)
+        .environmentObject(dataController)
         .environmentObject(ModelData())
 }

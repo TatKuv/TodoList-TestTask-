@@ -15,6 +15,7 @@ struct Todo_List__TestTask_App: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(dataController)
                 .environment(\.managedObjectContext, dataController.container.viewContext)
                 .environmentObject(modelData)
         }
