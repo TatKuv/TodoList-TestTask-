@@ -9,14 +9,13 @@ import CoreData
 import SwiftUI
 
 struct ContentView: View {
-    @FetchRequest(sortDescriptors: []) var todos: FetchedResults<Todo>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date, order: .reverse)]) var todos: FetchedResults<Todo>
     
     @EnvironmentObject var dataController: DataController
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var modelData: ModelData
     
     @State private var searchText = ""
-//    @State private var showDetails = false
     
     var filteredTasks: [Todo] {
         if searchText.isEmpty {
@@ -37,7 +36,7 @@ struct ContentView: View {
                         
                         Image(systemName: task.isCompleted ? "checkmark.circle" : "circle")
                             .scaleEffect(1.8)
-                            .foregroundStyle(.yellow)
+                            .foregroundStyle(task.isCompleted ? .yellow : .gray)
                         
                         VStack (alignment: .leading) {
                             
@@ -89,17 +88,12 @@ struct ContentView: View {
                         Spacer()
                         Text("\(todos.count) \(taskWord(for: todos.count))")
                         Spacer()
-                        NavigationLink(value: moc) {
+                        
+                        NavigationLink {
+                            TodoDetailedView(context: dataController.newBackgroundContext())
+                        } label: {
                             Label("New", systemImage: "square.and.pencil")
                         }
-                        .navigationDestination(for: NSManagedObjectContext.self) { moc in
-                            TodoDetailedView(context: moc)
-                        }
-//                            Button {
-//                                showDetails.toggle()
-//                            } label: {
-//                                Label("New", systemImage: "square.and.pencil")
-//                            }
                     }
                 }
                 
