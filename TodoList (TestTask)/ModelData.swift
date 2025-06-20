@@ -11,6 +11,24 @@ import Foundation
 
 final class ModelData: ObservableObject {
 
+    func deleteInBackground(task: Todo, dataController: DataController, completion: @escaping () -> Void = {}) {
+        let objectID = task.objectID
+        let context = dataController.newBackgroundContext()
+
+        context.perform {
+            do {
+                if let object = try? context.existingObject(with: objectID) {
+                    context.delete(object)
+                    try context.save()
+                }
+                DispatchQueue.main.async {
+                    completion()
+                }
+            } catch {
+                print("Ошибка удаления: \(error.localizedDescription)")
+            }
+        }
+    }
     
     func importTodos(from todos: [TodoDTO], into dataController: DataController) throws {
         let context = dataController.newBackgroundContext()

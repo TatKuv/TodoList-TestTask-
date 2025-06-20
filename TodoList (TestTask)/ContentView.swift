@@ -70,8 +70,9 @@ struct ContentView: View {
                         }
                         
                         Button {
-                            moc.delete(task)
-                            dataController.saveData()
+                                modelData.deleteInBackground(task: task, dataController: dataController) {
+                                    // filteredTodos.removeAll { $0.objectID == task.objectID }
+                            }
                         } label: {
                             Label("Удалить", systemImage: "arrow.up.trash")
                         }

@@ -28,8 +28,8 @@ struct TodoDetailedView: View {
         
         let todo = Todo(context: context)
         todo.id = UUID().uuidString
-        todo.todo = "New Task"
-        todo.taskDescription = "Task Description"
+        todo.todo = "Новая задача"
+        todo.taskDescription = "Описание"
         todo.date = Date.now
         todo.isCompleted = false
         
@@ -44,21 +44,21 @@ struct TodoDetailedView: View {
     
     var body: some View {
         
-        NavigationView {
+        NavigationStack {
         
             VStack (alignment: .leading, spacing: 20) {
-                TextField("Todo", text: $title)
+                TextField("Задача", text: $title, axis: .vertical)
                     .font(.largeTitle)
                     .bold()
                 Text(dateStr)
                     .font(.caption)
                     .opacity(0.8)
-                TextField("Todo", text: $taskDescription)
+                TextField("Описание", text: $taskDescription, axis: .vertical)
                 Spacer()
             }
-            .padding()
+            //.padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            
+            .padding()
             .onDisappear {
                 todo.todo = title
                 todo.taskDescription = taskDescription
