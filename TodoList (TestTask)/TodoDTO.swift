@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Todos: Decodable {
+struct Todos: Decodable {
     let todos: [TodoDTO]
 }
 
@@ -27,7 +27,7 @@ class TodoDTO: Codable, Hashable, Identifiable, ObservableObject {
     var title: String
     var taskDescription: String
     var completed: Bool
-    var date = Date.now.formatted(date: .numeric, time: .omitted)
+    var date = Date.now
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -49,12 +49,12 @@ class TodoDTO: Codable, Hashable, Identifiable, ObservableObject {
         self.title = taskDescription
     }
     
-    init(id: Int, taskDescription: String, title: String, completed: Bool = false) {
-        self.id = id
-        self.taskDescription = taskDescription
-        self.title = title
-        self.completed = completed
-    }
+//    init(id: Int, taskDescription: String, title: String, completed: Bool = false) {
+//        self.id = id
+//        self.taskDescription = taskDescription
+//        self.title = title
+//        self.completed = completed
+//    }
 
 }
 

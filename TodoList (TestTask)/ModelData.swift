@@ -30,10 +30,9 @@ final class ModelData: ObservableObject {
         }
     }
     
-    func importTodos(from todos: [TodoDTO], into dataController: DataController) throws {
-        let context = dataController.newBackgroundContext()
-        
-        context.perform {
+    
+        func importTodos(from todos: [TodoDTO], into context: NSManagedObjectContext) throws {
+            
             for dto in todos {
                 let todo = Todo(context: context)
                 todo.id = UUID().uuidString
@@ -41,7 +40,6 @@ final class ModelData: ObservableObject {
                 todo.isCompleted = dto.completed
                 todo.date = Date.now
                 todo.taskDescription = dto.title
-            }
         }
         
         do {
@@ -51,7 +49,7 @@ final class ModelData: ObservableObject {
         }
     }
     
-    func loadAndImportTodos(using dataController: DataController) async {
+    func loadAndImportTodos(using context: NSManagedObjectContext) async {
         guard let url = URL(string: "https://dummyjson.com/todos") else {
             print("Invalid URL")
             return
@@ -68,7 +66,7 @@ final class ModelData: ObservableObject {
             let (data, _) = try await URLSession.shared.data(from: url)
             if let decodedData = try? decoder.decode(Todos.self, from: data) {
                         do {
-                            try self.importTodos(from: decodedData.todos, into: dataController)
+                            try self.importTodos(from: decodedData.todos, into: context)
                         } catch {
                             print("no transfered")
                         }

@@ -21,7 +21,7 @@ struct ContentView: View {
         if searchText.isEmpty {
             Array(todos)
         } else {
-            todos.filter { $0.todo.localizedStandardContains(searchText) == true }  //search
+            todos.filter { $0.todo.localizedStandardContains(searchText) == true }
         }
     }
     
@@ -29,9 +29,9 @@ struct ContentView: View {
     var body: some View {
         
         NavigationStack {
-            
             VStack {
-                List(filteredTasks) { task in
+                //List(filteredTasks) { task in
+                List(todos) { task in
                     HStack(alignment: .firstTextBaseline, spacing: 15) {
                         
                         Image(systemName: task.isCompleted ? "checkmark.circle" : "circle")
@@ -39,8 +39,8 @@ struct ContentView: View {
                             .foregroundStyle(task.isCompleted ? .yellow : .gray)
                         
                         VStack (alignment: .leading) {
-                            
                             Group {
+                                
                                 Text(task.todo)
                                     .font(.title2)
                                     .strikethrough(task.isCompleted)
@@ -59,7 +59,6 @@ struct ContentView: View {
                         task.isCompleted.toggle()
                         dataController.saveData()
                     }
-                    
                     .contextMenu {
                         NavigationLink(value: task) {
                             Label("Редактировать", systemImage: "square.and.pencil")
@@ -70,17 +69,16 @@ struct ContentView: View {
                         }
                         
                         Button {
-                                modelData.deleteInBackground(task: task, dataController: dataController) {
-                                    // filteredTodos.removeAll { $0.objectID == task.objectID }
-                            }
+                            modelData.deleteInBackground(task: task, dataController: dataController) { }
                         } label: {
                             Label("Удалить", systemImage: "arrow.up.trash")
                         }
                     }
                 }
                 .navigationDestination(for: Todo.self) { task in
-                        TodoDetailedView(todo: task, context: moc)
-                    }
+                    TodoDetailedView(todo: task, context: moc)
+                    //TodoDetailedView(todo: task, context: dataController.newBackgroundContext())
+                }
                 .listStyle(.plain)
                 .navigationTitle("Задачи")
                 .toolbar {
@@ -90,17 +88,24 @@ struct ContentView: View {
                         Text("\(todos.count) \(taskWord(for: todos.count))")
                         Spacer()
                         
-                        NavigationLink {
-                            TodoDetailedView(context: dataController.newBackgroundContext())
-                        } label: {
+                        //                        NavigationLink {
+                        //                            TodoDetailedView(context: dataController.newBackgroundContext())
+                        //                        } label: {
+                        //                            Label("New", systemImage: "square.and.pencil")
+                        //                        }
+                        
+                        NavigationLink(value: moc) {
                             Label("New", systemImage: "square.and.pencil")
+                        }
+                        .navigationDestination(for: NSManagedObjectContext.self) { moc in
+                            TodoDetailedView(context: moc)
                         }
                     }
                 }
                 
                 .task {
                     if todos.isEmpty {
-                        await modelData.loadAndImportTodos(using: dataController)
+                        await modelData.loadAndImportTodos(using: moc)
                     }
                 }
                 .searchable(text: $searchText, prompt: "Поиск задач")
