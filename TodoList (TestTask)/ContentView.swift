@@ -17,14 +17,6 @@ struct ContentView: View {
     
     @State private var searchText = ""
     
-    var filteredTasks: [Todo] {
-        if searchText.isEmpty {
-            Array(todos)
-        } else {
-            todos.filter { $0.todo.localizedStandardContains(searchText) == true }
-        }
-    }
-    
     
     var body: some View {
         
