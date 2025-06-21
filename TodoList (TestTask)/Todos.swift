@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+struct Todos: Decodable {
+    let todos: [TodoDTO]
+}

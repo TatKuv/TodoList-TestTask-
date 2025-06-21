@@ -30,8 +30,7 @@ struct ContentView: View {
         
         NavigationStack {
             VStack {
-                //List(filteredTasks) { task in
-                List(todos) { task in
+                List(filteredTasks) { task in
                     HStack(alignment: .firstTextBaseline, spacing: 15) {
                         
                         Image(systemName: task.isCompleted ? "checkmark.circle" : "circle")
@@ -76,8 +75,7 @@ struct ContentView: View {
                     }
                 }
                 .navigationDestination(for: Todo.self) { task in
-                    TodoDetailedView(todo: task, context: moc)
-                    //TodoDetailedView(todo: task, context: dataController.newBackgroundContext())
+                    TodoDetailedView(todo: task, context: dataController.newBackgroundContext())
                 }
                 .listStyle(.plain)
                 .navigationTitle("Задачи")
@@ -88,17 +86,10 @@ struct ContentView: View {
                         Text("\(todos.count) \(taskWord(for: todos.count))")
                         Spacer()
                         
-                        //                        NavigationLink {
-                        //                            TodoDetailedView(context: dataController.newBackgroundContext())
-                        //                        } label: {
-                        //                            Label("New", systemImage: "square.and.pencil")
-                        //                        }
-                        
-                        NavigationLink(value: moc) {
+                        NavigationLink {
+                            TodoDetailedView(context: dataController.newBackgroundContext())
+                        } label: {
                             Label("New", systemImage: "square.and.pencil")
-                        }
-                        .navigationDestination(for: NSManagedObjectContext.self) { moc in
-                            TodoDetailedView(context: moc)
                         }
                     }
                 }

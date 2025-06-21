@@ -19,8 +19,8 @@ struct TodoDetailedView: View {
     
     init(todo: Todo, context: NSManagedObjectContext) {
         self.todo = todo
-        self.title = todo.todo //?? "Task"
-        self.taskDescription = todo.taskDescription //?? ""
+        self.title = todo.todo
+        self.taskDescription = todo.taskDescription
         
         self.context = context
     }
@@ -45,8 +45,7 @@ struct TodoDetailedView: View {
     
     var body: some View {
         
-        NavigationStack {
-            
+        NavigationView {
             VStack (alignment: .leading, spacing: 20) {
                 TextField("Задача", text: $title, axis: .vertical)
                     .font(.largeTitle)
