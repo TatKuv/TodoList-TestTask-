@@ -38,11 +38,11 @@ struct ContentView: View {
                     }
                 }
             
-                .task {
-                    if todos.isEmpty {
-                        await modelData.loadAndImportTodos(using: moc)
-                    }
-                }
+//                .task {
+//                    if todos.isEmpty {
+//                        await modelData.loadAndImportTodos(using: moc)
+//                    }
+//                }
                 .searchable(text: $searchText, prompt: "Поиск задач")
                 .preferredColorScheme(.dark)
         }
